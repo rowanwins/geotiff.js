@@ -18,7 +18,9 @@ function copyNewSize(array, width, height, samplesPerPixel = 1) {
 export function resampleNearest(valueArrays, inWidth, inHeight, outWidth, outHeight) {
   const relX = inWidth / outWidth;
   const relY = inHeight / outHeight;
-  return valueArrays.map((array) => {
+  const out = [];
+  for (let i = 0; i < valueArrays.length; i++) {
+    const array = valueArrays[i];
     const newArray = copyNewSize(outWidth, outHeight);
     for (let y = 0; y < outHeight; ++y) {
       const cy = Math.min(Math.round(relY * y), inHeight - 1);
@@ -28,8 +30,9 @@ export function resampleNearest(valueArrays, inWidth, inHeight, outWidth, outHei
         newArray[(y * outWidth) + x] = value;
       }
     }
-    return newArray;
-  });
+    out.push(newArray);
+  }
+  return out;
 }
 
 // simple linear interpolation, code from:
@@ -51,7 +54,9 @@ export function resampleBilinear(valueArrays, inWidth, inHeight, outWidth, outHe
   const relX = inWidth / outWidth;
   const relY = inHeight / outHeight;
 
-  return valueArrays.map((array) => {
+  const out = [];
+  for (let i = 0; i < valueArrays.length; i++) {
+    const array = valueArrays[i];
     const newArray = copyNewSize(outWidth, outHeight);
     for (let y = 0; y < outHeight; ++y) {
       const rawY = relY * y;
@@ -79,8 +84,9 @@ export function resampleBilinear(valueArrays, inWidth, inHeight, outWidth, outHe
         newArray[(y * outWidth) + x] = value;
       }
     }
-    return newArray;
-  });
+    out.push(newArray);
+  }
+  return out;
 }
 
 /**

@@ -469,8 +469,11 @@ class MultiGeoTIFF extends GeoTIFFBase {
   }
 
   async parseFileDirectoriesPerFile() {
-    const requests = [this.mainFile.parseFileDirectories()]
-      .concat(this.overviewFiles.map(file => file.parseFileDirectories()));
+    const overviewFilesDirs = [];
+    for (let i = 0; i < this.overviewFiles.length; i++) {
+      overviewFilesDirs.push(this.overviewFiles[i].parseFileDirectories());
+    }
+    const requests = [this.mainFile.parseFileDirectories()].concat(overviewFilesDirs);
 
     this.fileDirectoriesPerFile = await Promise.all(requests);
     return this.fileDirectoriesPerFile;
@@ -578,9 +581,11 @@ export async function fromBlob(blob) {
  */
 export async function fromUrls(mainUrl, overviewUrls = [], options = {}) {
   const mainFile = await GeoTIFF.fromSource(makeRemoteSource(mainUrl, options));
-  const overviewFiles = await Promise.all(
-    overviewUrls.map(url => GeoTIFF.fromSource(makeRemoteSource(url, options))),
-  );
+  const sources = [];
+  for (let i = 0; i < overviewUrls.length; i++) {
+    sources.push(GeoTIFF.fromSource(makeRemoteSource(overviewUrls[i], options)));
+  }
+  const overviewFiles = await Promise.all(sources);
 
   return new MultiGeoTIFF(mainFile, overviewFiles);
 }

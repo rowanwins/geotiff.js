@@ -218,7 +218,10 @@ class BlockedSource {
     await Promise.all(blockRequests);
 
     // now get all blocks for the request and return a summary buffer
-    const blocks = allBlockIds.map(id => this.blocks.get(id));
+    const blocks = [];
+    for (let i = 0; i < allBlockIds.length; i++) {
+      this.blocks.get(allBlockIds[i]);
+    }
     return readRangeFromBlocks(blocks, offset, length);
   }
 
