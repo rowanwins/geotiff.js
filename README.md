@@ -1,5 +1,5 @@
 # geotiff.js
-[![Build Status](https://travis-ci.org/geotiffjs/geotiff.js.svg)](https://travis-ci.org/geotiffjs/geotiff.js) [![Dependency Status](https://www.versioneye.com/user/projects/566af91d4e049b0041000083/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566af91d4e049b0041000083) [![npm version](https://badge.fury.io/js/geotiff.svg)](https://badge.fury.io/js/geotiff)
+[![Build Status](https://travis-ci.org/geotiffjs/geotiff.js.svg)](https://travis-ci.org/geotiffjs/geotiff.js) [![Dependency Status](https://www.versioneye.com/user/projects/566af91d4e049b0041000083/badge.svg?style=flat)](https://www.versioneye.com/user/projects/566af91d4e049b0041000083) [![npm version](https://badge.fury.io/js/geotiff.svg)](https://badge.fury.io/js/geotiff) [![Gitter chat](https://badges.gitter.im/geotiffjs/geotiff.js.png)](https://gitter.im/geotiffjs/Lobby)
 
 Read (geospatial) metadata and raw array data from a wide variety of different
 (Geo)TIFF files types.
@@ -337,6 +337,35 @@ const multiTiff = await GeoTIFF.fromUrls(
   'LC08_L1TP_189027_20170403_20170414_01_T1_B3.TIF',
   ['LC08_L1TP_189027_20170403_20170414_01_T1_B3.TIF.ovr']
 );
+```
+
+### Writing GeoTIFFs (Beta Version)
+You can create a binary representation of a GeoTIFF using `writeArrayBuffer`.
+This function returns an ArrayBuffer which you can then save as a .tif file.
+:warning: writeArrayBuffer currently writes the values uncompressed
+```javascript
+import { writeArrayBuffer } from 'geotiff';
+
+const values = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const metadata = {
+  height: 3,
+  width: 3
+};
+const arrayBuffer = await writeArrayBuffer(values, metadata);
+```
+
+You can also customize the metadata using names found in the [TIFF Spec](https://www.loc.gov/preservation/digital/formats/content/tiff_tags.shtml) and [GeoTIFF spec](https://cdn.earthdata.nasa.gov/conduit/upload/6852/geotiff-1.8.1-1995-10-31.pdf).
+```javascript
+import { writeArrayBuffer } from 'geotiff';
+
+const values = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const metadata = {
+  height: 3,
+  ModelPixelScale: [0.031355, 0.031355, 0],
+  ModelTiepoint: [0, 0, 0, 11.331755000000001, 46.268645, 0],  
+  width: 3
+};
+const arrayBuffer = await writeArrayBuffer(values, metadata);
 ```
 
 ## What to do with the data?
